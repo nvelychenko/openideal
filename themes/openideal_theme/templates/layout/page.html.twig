@@ -83,11 +83,9 @@
                         {{ page.logo }}
                     </div>
                 {% endif %}
-                {% if logged_in %}
-                    <div class="site-navigation--add-idea">
-                        <a id="add-idea-navigation-button" href="{{ path('node.add', {'node_type': 'idea' }) }}">{{ 'Add idea'|t }}</a>
-                    </div>
-                {% endif %}
+                <div class="site-navigation--add-idea">
+                    <a id="add-idea-navigation-button" href="{{ logged_in ? path('node.add', {'node_type': 'idea' }) : path('user.register') }}">{{ 'Add idea'|t }}</a>
+                </div>
                 <div class="navbar-collapse site-navigation--elements" id="CollapsingNavbar">
                     <div class="site-navigation--top">
                         {% if page.navigation %}

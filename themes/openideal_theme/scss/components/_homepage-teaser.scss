@@ -209,8 +209,23 @@
       display: none;
     }
 
-    .frontpage-add-idea-button {
+    .frontpage-right-section-wrapper {
       margin-left: auto;
+      display: flex;
+      align-items: center;
+
+    }
+    .front-page-tour-button {
+      border: unset;
+      width: 40px;
+      height: 40px;
+      margin: 5px;
+      background: url("../images/icons/tour_icon.svg") center center no-repeat;
+      background-size: 40px 40px;
+      font-size: 0;
+    }
+
+    .frontpage-add-idea-button {
       @include btn-theme($btn-light, #5eaed2);
       font-size: 16px;
       text-transform: uppercase;

@@ -9,6 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
+use Drupal\openideal_user\EventSubscriber\OpenidealUserEventSubscriber as TourIndicate;
 
 /**
  * Implements hook_form_system_theme_settings_alter() for settings form.
@@ -76,6 +77,14 @@ function openideal_theme_preprocess_page(&$variables) {
   if ($route_match->getRouteName() == 'view.frontpage.front_page' || $route_match->getRouteName() == 'entity.user.canonical') {
     $variables['is_activity_page'] = TRUE;
   }
+
+  // Start the tour if the user visits the home page for the first time.
+  if ($route_match->getRouteName() == 'view.frontpage.front_page'
+    && ((\Drupal::currentUser()->isAnonymous() && !\Drupal::request()->cookies->has(TourIndicate::FRONT_PAGE_TOUR_COOKIE))
+      || (\Drupal::currentUser()->isAuthenticated() && !\Drupal::service('user.data')->get('openideal_user', \Drupal::currentUser()->id(), TourIndicate::FRONT_PAGE_TOUR_COOKIE)))
+  ) {
+    $variables['#attached']['drupalSettings']['openidealTour']['front'] = TRUE;
+  }
 }
 
 /**
@@ -131,7 +140,7 @@ function openideal_theme_preprocess_field__user__created(&$variables) {
   $element = $variables['element'];
   if (isset($element['#third_party_settings']['layout_builder']['view_mode'])
     && (($element['#third_party_settings']['layout_builder']['view_mode'] == 'compact')
-    || ($element['#third_party_settings']['layout_builder']['view_mode'] == 'full'))
+      || ($element['#third_party_settings']['layout_builder']['view_mode'] == 'full'))
   ) {
     $variables['label'] = t('Joined');
   }

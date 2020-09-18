@@ -59,6 +59,24 @@
   };
 
   /**
+   * Open tour.
+   *
+   * @type {Drupal~behavior}
+   *
+   * @prop {Drupal~behaviorAttach} attach
+   *   Attach behaviors that active tour.
+   */
+  Drupal.behaviors.openidealThemeHomePageTour = {
+    attach: function (context, settings) {
+      $('.js-tour-start-button').once('openideal_theme_home_page_tour').each(function () {
+        if (settings.openidealTour.front) {
+          $(this).trigger('click');
+        }
+      });
+    }
+  };
+
+  /**
    * Custom select behaviors.
    *
    * @type {Drupal~behavior}

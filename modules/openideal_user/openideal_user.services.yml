@@ -14,6 +14,9 @@ services:
     arguments:
       - '@event_dispatcher'
       - '@entity_type.manager'
+      - '@datetime.time'
+      - '@current_user'
+      - '@user.data'
     tags:
       - { name: event_subscriber }
 
