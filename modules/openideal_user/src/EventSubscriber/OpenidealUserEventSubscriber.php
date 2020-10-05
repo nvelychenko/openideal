@@ -9,6 +9,7 @@ use Drupal\comment\Entity\Comment;
 use Drupal\content_moderation\Event\ContentModerationEvents;
 use Drupal\content_moderation\Event\ContentModerationStateChangedEvent;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Url;
 use Drupal\openideal_user\Event\OpenidealContentModerationEvent;
 use Drupal\openideal_user\Event\OpenidealUserEvents;
 use Drupal\openideal_user\Event\OpenidealUserMentionEvent;
@@ -16,6 +17,7 @@ use Drupal\user\UserDataInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -118,11 +120,13 @@ class OpenidealUserEventSubscriber implements EventSubscriberInterface {
         $cookie = new Cookie('OpenideaL.visitor.tour_front_page', '1', $this->time->getRequestTime() + 31536000, '/');
         $response = $event->getResponse();
         $response->headers->setCookie($cookie);
+        $this->generateRedirectResponse($event);
       }
       // Same with authenticated user, set indicator into user.data
       // service that user has already visited frontpage.
-      elseif (!$this->currentUser->isAnonymous() && !$this->userData->get('openideal_user', $this->currentUser->id(), self::FRONT_PAGE_TOUR_COOKIE)) {
+      elseif (!$this->currentUser->isAnonymous() && !$this->userData->get('openideal_user', $this->currentUser->id(), self::USER_DATA_TOUR_NAME)) {
         $this->userData->set('openideal_user', $this->currentUser->id(), self::USER_DATA_TOUR_NAME, '1');
+        $this->generateRedirectResponse($event);
       }
     }
   }
@@ -155,6 +159,25 @@ class OpenidealUserEventSubscriber implements EventSubscriberInterface {
   public function stateChanged(ContentModerationStateChangedEvent $event) {
     $event = new OpenidealContentModerationEvent($event);
     $this->eventDispatcher->dispatch(OpenidealUserEvents::WORKFLOW_STATE_CHANGED, $event);
+  }
+
+  /**
+   * Generate redirect response.
+   *
+   * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
+   *   Event.
+   */
+  protected function generateRedirectResponse(FilterResponseEvent $event) {
+    // @Todo: need to check for existing query params?
+    $url = Url::fromUri($event->getRequest()->getSchemeAndHttpHost(), ['query' => ['tour' => 1], 'absolute' => TRUE])->toString();
+    $response = new RedirectResponse($url);
+    $old_response = $event->getResponse();
+    // Cookies are separate from other headers and have to be copied over
+    // directly.
+    foreach ($old_response->headers->getCookies() as $cookie) {
+      $response->headers->setCookie($cookie);
+    }
+    $event->setResponse($response);
   }
 
 }
