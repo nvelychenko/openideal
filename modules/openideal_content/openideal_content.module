@@ -79,7 +79,7 @@ function openideal_content_form_views_exposed_form_alter(&$form, FormStateInterf
           '#title' => t('Add idea'),
           '#url' => Url::fromRoute('node.add', ['node_type' => 'idea']),
           '#attributes' => ['class' => ['frontpage-add-idea-button']],
-          '#access' => \Drupal::currentUser()->isAuthenticated(),
+          '#access' => \Drupal::currentUser()->hasPermission('create idea content'),
         ],
       ];
     }

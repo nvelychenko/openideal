@@ -75,6 +75,7 @@ function openideal_theme_preprocess_page(&$variables) {
 
   if ($route_match->getRouteName() == 'view.frontpage.front_page' || $route_match->getRouteName() == 'entity.user.canonical') {
     $variables['is_activity_page'] = TRUE;
+    $variables['#attached']['library'][] = 'openideal_theme/tour';
   }
 }
 

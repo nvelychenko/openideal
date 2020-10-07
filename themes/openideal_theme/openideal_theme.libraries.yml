@@ -22,3 +22,10 @@ global-scripts:
     - core/jquery
     - core/drupal
     - core/jquery.once
+
+tour:
+  js:
+    js/tour.js: {}
+  dependencies:
+    - tour/tour
+    - core/js-cookie

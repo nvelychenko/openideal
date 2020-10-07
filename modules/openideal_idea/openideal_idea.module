@@ -285,10 +285,20 @@ function openideal_idea_form_views_exposed_form_alter(&$form, FormStateInterface
  * Implements hook_ENTITY_TYPE_access().
  */
 function openideal_idea_group_content_access(EntityInterface $entity, $operation, AccountInterface $account) {
-  if ($entity->getOwnerId() === $account->id()
-    && $operation == 'delete'
-    && $entity->getContentPlugin()->getPluginId() == 'group_membership') {
-    return AccessResult::forbidden();
+  if ($entity->getContentPlugin()->getPluginId() == 'group_membership') {
+    $group = $entity->getGroup();
+    switch ($operation) {
+      case 'update':
+      case 'delete':
+        // Remove ability to edit roles for idea-author
+        // if author has not ability to add idea-author.
+        // @Todo: implement custom form, with ability to add/remove only acceptable roles.
+        $has_administer_role = !empty(array_intersect(['administrator', 'manager'], $account->getRoles()));
+        if (!$has_administer_role && (!$group->hasPermission('manage members with role idea-author', $account) || $entity->getOwnerId() == $account->id())) {
+          return AccessResult::forbidden();
+        }
+        break;
+    }
   }
 
   return AccessResult::neutral();

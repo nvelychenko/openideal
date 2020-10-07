@@ -16,7 +16,6 @@ use Drupal\openideal_user\Event\OpenidealUserMentionEvent;
 use Drupal\user\UserDataInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -29,8 +28,7 @@ class OpenidealUserEventSubscriber implements EventSubscriberInterface {
   /**
    * Tour related information.
    */
-  const FRONT_PAGE_TOUR_COOKIE = 'OpenideaL_visitor_tour_front_page';
-  const USER_DATA_TOUR_NAME = 'front_page_tour';
+  const TOUR_SHOWED = 'tour_displayed';
 
   /**
    * Event dispatcher.
@@ -113,19 +111,17 @@ class OpenidealUserEventSubscriber implements EventSubscriberInterface {
    *   Dispatched event.
    */
   public function response(FilterResponseEvent $event) {
-    if ($event->getRequest()->get('_route') == 'view.frontpage.front_page') {
+    $request = $event->getRequest();
+    if ($request->get('_route') == 'view.frontpage.front_page' && !$request->query->has('tour')) {
       // Set a cookie for anonymous user when
       // visits front page for the first time.
-      if ($this->currentUser->isAnonymous() && !$event->getRequest()->cookies->has('OpenideaL_visitor_tour_front_page')) {
-        $cookie = new Cookie('OpenideaL.visitor.tour_front_page', '1', $this->time->getRequestTime() + 31536000, '/');
-        $response = $event->getResponse();
-        $response->headers->setCookie($cookie);
+      if ($this->currentUser->isAnonymous() && !$event->getRequest()->cookies->has(self::TOUR_SHOWED)) {
         $this->generateRedirectResponse($event);
       }
       // Same with authenticated user, set indicator into user.data
       // service that user has already visited frontpage.
-      elseif (!$this->currentUser->isAnonymous() && !$this->userData->get('openideal_user', $this->currentUser->id(), self::USER_DATA_TOUR_NAME)) {
-        $this->userData->set('openideal_user', $this->currentUser->id(), self::USER_DATA_TOUR_NAME, '1');
+      elseif (!$this->currentUser->isAnonymous() && !$this->userData->get('openideal_user', $this->currentUser->id(), self::TOUR_SHOWED)) {
+        $this->userData->set('openideal_user', $this->currentUser->id(), self::TOUR_SHOWED, '1');
         $this->generateRedirectResponse($event);
       }
     }
@@ -168,15 +164,10 @@ class OpenidealUserEventSubscriber implements EventSubscriberInterface {
    *   Event.
    */
   protected function generateRedirectResponse(FilterResponseEvent $event) {
-    // @Todo: need to check for existing query params?
-    $url = Url::fromUri($event->getRequest()->getSchemeAndHttpHost(), ['query' => ['tour' => 1], 'absolute' => TRUE])->toString();
+    $request = $event->getRequest();
+    $request->query->set('tour', 'start');
+    $url = Url::fromRoute($request->get('_route'))->mergeOptions(['query' => $request->query->all()])->toString();
     $response = new RedirectResponse($url);
-    $old_response = $event->getResponse();
-    // Cookies are separate from other headers and have to be copied over
-    // directly.
-    foreach ($old_response->headers->getCookies() as $cookie) {
-      $response->headers->setCookie($cookie);
-    }
     $event->setResponse($response);
   }
 
