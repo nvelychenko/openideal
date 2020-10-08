@@ -113,18 +113,15 @@ class OpenidealUserEventSubscriber implements EventSubscriberInterface {
   public function response(FilterResponseEvent $event) {
     $request = $event->getRequest();
     $route_name = $request->get('_route');
-    $results = $this->entityTypeManager->getStorage('tour')->getQuery()
-      ->condition('routes.*.route_name', $route_name)
-      ->execute();
-    if (!empty($results) && in_array('openideal-welcome', $results) && $request->get('_route') == 'view.frontpage.front_page' && !$request->query->has('tour')) {
+    if ($route_name == 'view.frontpage.front_page' && !$request->query->has('tour')) {
       // Set a cookie for anonymous user when
       // visits front page for the first time.
-      if ($this->currentUser->isAnonymous() && !$event->getRequest()->cookies->has(self::TOUR_SHOWED)) {
+      if ($this->currentUser->isAnonymous() && !$event->getRequest()->cookies->has(self::TOUR_SHOWED) && $this->isTourAttached($route_name, 'openideal-welcome')) {
         $this->generateRedirectResponse($event);
       }
       // Same with authenticated user, set indicator into user.data
       // service that user has already visited frontpage.
-      elseif (!$this->currentUser->isAnonymous() && !$this->userData->get('openideal_user', $this->currentUser->id(), self::TOUR_SHOWED)) {
+      elseif (!$this->currentUser->isAnonymous() && !$this->userData->get('openideal_user', $this->currentUser->id(), self::TOUR_SHOWED) && $this->isTourAttached($route_name, 'openideal-welcome')) {
         $this->userData->set('openideal_user', $this->currentUser->id(), self::TOUR_SHOWED, '1');
         $this->generateRedirectResponse($event);
       }
@@ -173,6 +170,24 @@ class OpenidealUserEventSubscriber implements EventSubscriberInterface {
     $url = Url::fromRoute($request->get('_route'))->mergeOptions(['query' => $request->query->all()])->toString();
     $response = new RedirectResponse($url);
     $event->setResponse($response);
+  }
+
+  /**
+   * Checks if tour attached to current page.
+   *
+   * @param string $route_name
+   *   Page to check.
+   * @param string $tour_name
+   *   Tour name.
+   *
+   * @return bool
+   *   TRUE if attached, false otherwise.
+   */
+  protected function isTourAttached(string $route_name, $tour_name = NULL) {
+    $results = $this->entityTypeManager->getStorage('tour')->getQuery()
+      ->condition('routes.*.route_name', $route_name)
+      ->execute();
+    return !empty($results) ? ((isset($tour_name) ? in_array($tour_name, $results) : TRUE)) : FALSE;
   }
 
 }

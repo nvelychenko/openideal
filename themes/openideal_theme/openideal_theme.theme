@@ -77,13 +77,6 @@ function openideal_theme_preprocess_page(&$variables) {
   if ($route_name == 'view.frontpage.front_page' || $route_name == 'entity.user.canonical') {
     $variables['is_activity_page'] = TRUE;
   }
-
-  $results = \Drupal::entityQuery('tour')
-    ->condition('routes.*.route_name', $route_name)
-    ->execute();
-  if (!empty($results) && in_array('openideal-welcome', $results) && $route_match->getRouteName() == 'view.frontpage.front_page') {
-    $variables['#attached']['library'][] = 'openideal_theme/tour';
-  }
 }
 
 /**

@@ -350,3 +350,12 @@ function openideal_idea_module_implements_alter(&$implementations, $hook) {
 function openideal_idea_validation_constraint_alter(array &$definitions) {
   $definitions['ModerationState']['class'] = OpenidealModerationStateConstraint::class;
 }
+
+/**
+ * Implements hook_page_bottom().
+ */
+function openideal_idea_page_bottom(array &$page_bottom) {
+  if (\Drupal::routeMatch()->getRouteName() == 'view.frontpage.front_page' && isset($page_bottom['tour']['openideal-welcome'])) {
+    $page_bottom['tour']['#attached']['library'][] = 'openideal_theme/tour';
+  }
+}
