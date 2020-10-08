@@ -68,13 +68,20 @@ function openideal_theme_preprocess_html(&$variables) {
  */
 function openideal_theme_preprocess_page(&$variables) {
   $route_match = \Drupal::routeMatch();
+  $route_name = $route_match->getRouteName();
   $node = $route_match->getParameter('node');
   if ($node instanceof NodeInterface) {
     $variables['node_type'] = $node->bundle();
   }
 
-  if ($route_match->getRouteName() == 'view.frontpage.front_page' || $route_match->getRouteName() == 'entity.user.canonical') {
+  if ($route_name == 'view.frontpage.front_page' || $route_name == 'entity.user.canonical') {
     $variables['is_activity_page'] = TRUE;
+  }
+
+  $results = \Drupal::entityQuery('tour')
+    ->condition('routes.*.route_name', $route_name)
+    ->execute();
+  if (!empty($results) && in_array('openideal-welcome', $results) && $route_match->getRouteName() == 'view.frontpage.front_page') {
     $variables['#attached']['library'][] = 'openideal_theme/tour';
   }
 }

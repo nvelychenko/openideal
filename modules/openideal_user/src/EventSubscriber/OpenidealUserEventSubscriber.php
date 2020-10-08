@@ -112,7 +112,11 @@ class OpenidealUserEventSubscriber implements EventSubscriberInterface {
    */
   public function response(FilterResponseEvent $event) {
     $request = $event->getRequest();
-    if ($request->get('_route') == 'view.frontpage.front_page' && !$request->query->has('tour')) {
+    $route_name = $request->get('_route');
+    $results = $this->entityTypeManager->getStorage('tour')->getQuery()
+      ->condition('routes.*.route_name', $route_name)
+      ->execute();
+    if (!empty($results) && in_array('openideal-welcome', $results) && $request->get('_route') == 'view.frontpage.front_page' && !$request->query->has('tour')) {
       // Set a cookie for anonymous user when
       // visits front page for the first time.
       if ($this->currentUser->isAnonymous() && !$event->getRequest()->cookies->has(self::TOUR_SHOWED)) {
