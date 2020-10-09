@@ -9,6 +9,7 @@ permissions:
   - 'access comments'
   - 'access content'
   - 'access site-wide contact form'
+  - 'access tour'
   - 'access user profiles'
   - 'search content'
   - 'use text format comments'

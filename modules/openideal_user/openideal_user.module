@@ -236,24 +236,4 @@ function openideal_user_form_alter(&$form, FormStateInterface $form_state, $form
   && !\Drupal::currentUser()->hasPermission('administer site configuration')) {
     $form['field_duplicate_of']['#access'] = FALSE;
   }
-
-  if ($form_id == 'group_content_idea-group_membership_edit_form') {
-    $form['group_roles']['widget']['#after_build'][] = '_openideal_user_preprocess_group_membership';
-  }
-}
-
-/**
- * Preprocess the group roles edit form.
- *
- * Disable author select option for the author of the group.
- */
-function _openideal_user_preprocess_group_membership($element, FormStateInterface $form_state) {
-  if (isset($element['idea-author']) == 'idea-author' && \Drupal::routeMatch()->getRouteName() == 'entity.group_content.edit_form') {
-    $group = \Drupal::routeMatch()->getParameter('group');
-    $roles = \Drupal::service('group.membership_loader')->load($group, Drupal::currentUser())->getRoles();
-    if (array_key_exists('idea-author', $roles)) {
-      $element['idea-author']['#attributes']['disabled'] = TRUE;
-    }
-  }
-  return $element;
 }

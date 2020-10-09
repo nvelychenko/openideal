@@ -13,6 +13,7 @@ permissions:
   - 'access openideal_images_browser entity browser pages'
   - 'access shortcuts'
   - 'access site-wide contact form'
+  - 'access tour'
   - 'access user contact forms'
   - 'access user profiles'
   - 'administer entity browsers'

@@ -288,10 +288,20 @@ function openideal_idea_form_views_exposed_form_alter(&$form, FormStateInterface
  * Implements hook_ENTITY_TYPE_access().
  */
 function openideal_idea_group_content_access(EntityInterface $entity, $operation, AccountInterface $account) {
-  if ($entity->getOwnerId() === $account->id()
-    && $operation == 'delete'
-    && $entity->getContentPlugin()->getPluginId() == 'group_membership') {
-    return AccessResult::forbidden();
+  if ($entity->getContentPlugin()->getPluginId() == 'group_membership') {
+    $group = $entity->getGroup();
+    switch ($operation) {
+      case 'update':
+      case 'delete':
+        // Remove ability to edit roles for idea-author
+        // if author has not ability to add idea-author.
+        // @Todo: implement custom form, with ability to add/remove only acceptable roles.
+        $has_administer_role = !empty(array_intersect(['administrator', 'manager'], $account->getRoles()));
+        if (!$has_administer_role && (!$group->hasPermission('manage members with role idea-author', $account) || $entity->getOwnerId() == $account->id())) {
+          return AccessResult::forbidden();
+        }
+        break;
+    }
   }
 
   return AccessResult::neutral();
@@ -342,4 +352,13 @@ function openideal_idea_module_implements_alter(&$implementations, $hook) {
  */
 function openideal_idea_validation_constraint_alter(array &$definitions) {
   $definitions['ModerationState']['class'] = OpenidealModerationStateConstraint::class;
+}
+
+/**
+ * Implements hook_page_bottom().
+ */
+function openideal_idea_page_bottom(array &$page_bottom) {
+  if (\Drupal::routeMatch()->getRouteName() == 'view.frontpage.front_page' && isset($page_bottom['tour']['openideal-welcome'])) {
+    $page_bottom['tour']['#attached']['library'][] = 'openideal_theme/tour';
+  }
 }
