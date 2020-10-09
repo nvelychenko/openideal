@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - openideal_user
+id: openideal-welcome
+label: 'Welcome to OpenideaL'
+module: openideal_user
+routes:
+  -
+    route_name: view.frontpage.front_page
+tips:
+  welcome-to-openideal:
+    id: welcome-to-openideal
+    plugin: text
+    label: 'Welcome to OpenideaL'
+    weight: -1
+    attributes: null
+    body: 'Ideas and innovation management system'
+    location: top
+  add-your-idea:
+    id: add-your-idea
+    plugin: text
+    label: 'Add your Idea'
+    weight: 1
+    attributes:
+      data-id: add-idea-navigation-button
+    body: 'Click here to add new ideas. This button is available everywhere on the site.'
+    location: bottom

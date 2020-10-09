@@ -1,0 +1,236 @@
+.toolbar .toolbar-bar .tour-toolbar-tab.toolbar-tab {
+  float: right; /* LTR */
+}
+[dir="rtl"] .toolbar .toolbar-bar .tour-toolbar-tab.toolbar-tab {
+  float: left;
+}
+
+.tour-progress {
+  position: absolute;
+  right: 20px; /* LTR */
+  bottom: 20px;
+}
+[dir="rtl"] .tour-progress {
+  right: auto;
+  left: 20px;
+}
+
+.joyride-tip-guide {
+  position: absolute;
+  z-index: 101;
+  top: 0;
+  left: 0;
+  display: none;
+  width: 300px;
+  background: #fff;
+}
+
+@media only screen and (max-width: 767px) {
+  .joyride-tip-guide {
+    left: 2.5%;
+    width: 85%;
+  }
+}
+
+.joyride-content-wrapper {
+  position: relative;
+  padding: 20px 50px 20px 20px;  /* LTR */
+}
+[dir="rtl"] .joyride-content-wrapper {
+  padding: 20px 20px 20px 50px;
+}
+
+.joyride-tip-guide .joyride-nub {
+  position: absolute;
+  left: 22px;
+  display: block;
+  width: 0;
+  height: 0;
+}
+
+.joyride-tip-guide .joyride-nub.top {
+  top: -28px;
+  bottom: auto;
+}
+
+.joyride-tip-guide .joyride-nub.bottom {
+  bottom: -28px;
+}
+
+.joyride-tip-guide .joyride-nub.right {
+  top: 22px;
+  right: -28px;
+  bottom: auto;
+  left: auto;
+}
+
+.joyride-tip-guide .joyride-nub.left {
+  top: 22px;
+  right: auto;
+  bottom: auto;
+  left: -28px;
+}
+
+.joyride-tip-guide .joyride-nub.top-right {
+  top: -28px;
+  right: 28px;
+  bottom: auto;
+  left: auto;
+}
+
+.joyride-tip-guide .tour-tip-label {
+  margin-top: 0;
+}
+
+.joyride-tip-guide p {
+  margin: 0 0 1.4em;
+}
+
+.joyride-timer-indicator-wrap {
+  position: absolute;
+  right: 17px;
+  bottom: 16px;
+  width: 50px;
+  height: 3px;
+}
+.joyride-timer-indicator {
+  display: block;
+  width: 0;
+  height: inherit;
+}
+
+.joyride-close-tip {
+  position: absolute;
+  top: 20px;
+  right: 20px; /* LTR */
+  line-height: 1em;
+}
+[dir="rtl"] .joyride-close-tip {
+  right: auto;
+  left: 20px;
+}
+
+.joyride-modal-bg {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  display: none;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.joyride-modal-bg {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.joyride-expose-wrapper {
+  position: absolute;
+  z-index: 102;
+}
+
+.joyride-expose-cover {
+  position: absolute;
+  z-index: 10000;
+  top: 0;
+  left: 0;
+}
+
+.joyride-tip-guide {
+  padding: 0;
+  color: #fff;
+  border-radius: 5px;
+  background: #000;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Mobile */
+@media only screen and (max-width: 767px) {
+  .joyride-tip-guide {
+    border-radius: 0;
+  }
+}
+
+.joyride-tip-guide .joyride-nub {
+  border: solid 14px rgba(0, 0, 0, 0.8);
+}
+.joyride-tip-guide .joyride-nub.top {
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-left-color: transparent;
+}
+.joyride-tip-guide .joyride-nub.bottom {
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+}
+.joyride-tip-guide .joyride-nub.right {
+  border-top-color: transparent;
+  border-right-color: transparent; /* LTR */
+  border-bottom-color: transparent;
+}
+[dir="rtl"] .joyride-tip-guide .joyride-nub.right {
+  border-right-color: rgba(0, 0, 0, 0.8);
+  border-left-color: transparent;
+}
+.joyride-tip-guide .joyride-nub.left {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent; /* LTR */
+}
+[dir="rtl"] .joyride-tip-guide .joyride-nub.left {
+  border-right-color: transparent;
+  border-left-color: rgba(0, 0, 0, 0.8);
+}
+.joyride-tip-guide .joyride-nub.top-right {
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-left-color: transparent;
+}
+
+/* Typography */
+.joyride-tip-guide h2 {
+  color: #fff;
+}
+.joyride-tip-guide p {
+  line-height: 1.385em;
+}
+.joyride-tip-guide a {
+  color: #fff;
+}
+
+.joyride-tip-guide .joyride-next-tip {
+  margin: 0;
+}
+.joyride-timer-indicator-wrap {
+  border: solid 1px rgba(255, 255, 255, 0.1);
+}
+.joyride-timer-indicator {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.joyride-close-tip {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1.4em;
+  font-weight: bold;
+}
+.joyride-close-tip:hover,
+.joyride-close-tip:focus {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.joyride-modal-bg {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.joyride-expose-wrapper {
+  background-color: #fff;
+}
+
+.joyride-expose-cover {
+  background: transparent;
+}
+

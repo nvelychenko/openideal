@@ -1,0 +1,11 @@
+.button {
+  padding: .2em 1em;
+}
+
+.button--primary {
+  @include btn-theme($btn-dark, #1e7697);
+}
+
+.button--secondary {
+  @include btn-theme($btn-light, #5eaed2);
+}
