@@ -25,7 +25,6 @@ before_install:
   - cd openideal-composer
   - composer install
   - make up
-  - sudo chmod -r 777 web/sites
 
 install:
   - sudo make install
