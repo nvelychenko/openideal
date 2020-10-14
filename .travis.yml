@@ -21,8 +21,6 @@ before_install:
   - export COMPOSER_MEMORY_LIMIT=-1
   - composer global require hirak/prestissimo
   # Make
-  - apt-get update > /dev/null
-  - apt-get install make
   - git clone https://github.com/nvelychenko/openideal-composer.git openideal-composer
   - cd openideal-composer
   - composer install
