@@ -1,37 +1,41 @@
 ---
+os: linux
+
 language: php
 
 php: 7.2
 
-services:
-  - docker
+dist: xenial
+
+# Be sure to cache composer downloads.
+cache:
+  directories:
+    - $HOME/.composer
 
 matrix:
   fast_finish: true
+
+env:
+  global:
+    - DB=sqlite://tmp/site.sqlite
+    - URL="http://127.0.0.1:8080"
 
 before_script:
   - phpenv config-rm xdebug.ini
 
 before_install:
-  # Composer
+  # Composer configuration
   - export COMPOSER_MEMORY_LIMIT=-1
   - travis_retry composer self-update
   - composer global require hirak/prestissimo
-  - composer config repositories.openideal git https://github.com/nvelychenko/openideal.git
 
-  # Make
   - git clone --branch 3.x-dev https://github.com/nvelychenko/openideal-composer.git openideal-composer
   - cd openideal-composer
-  - mkdir -p web/sites/default/files
-  - chmod -R 777 web/sites/
-  - make up
-
-  # Install dependencies
-  - composer --verbose validate
-  - travis_retry composer install
 
 install:
-  - make install
+  - composer --verbose validate
+  - travis_retry composer install --dev
 
 script:
-  - vendor/bin/phpcs web/profiles/ --standard=Drupal,DrupalPractice --ignore="*.js,*.css,*.scss,*.sass,*.less,node_modules" --extensions=php,module,inc,install,test,profile,theme,info,yml
+  - ./vendor/bin/drush site-install --verbose --yes --db-url=sqlite://tmp/site.sqlite
+  - ./vendor/bin/phpcs web/profiles/ --standard=Drupal,DrupalPractice --ignore="*.js,*.css,*.scss,*.sass,*.less,node_modules" --extensions=php,module,inc,install,test,profile,theme,info,yml
