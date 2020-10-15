@@ -22,8 +22,10 @@ before_install:
   - git clone --branch 3.x-dev https://github.com/nvelychenko/openideal-composer.git openideal-composer
   - cd openideal-composer
   - composer --verbose validate
-  - make up
+  - travis_retry composer install
   - mkdir -p web/sites/default/files
+  - chmod -R 777 web/sites/
+  - make up
 
 install:
   - make install
