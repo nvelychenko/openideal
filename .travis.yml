@@ -25,6 +25,8 @@ before_install:
   - mkdir -p web/sites/default/files
   - chmod -R 777 web/sites/
   - make up
+
+  # Install dependencies
   - composer --verbose validate
   - travis_retry composer install
 
