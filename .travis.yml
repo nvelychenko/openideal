@@ -13,14 +13,20 @@ before_script:
   - phpenv config-rm xdebug.ini
 
 before_install:
+  # Composer
   - export COMPOSER_MEMORY_LIMIT=-1
+  - travis_retry composer self-update
   - composer global require hirak/prestissimo
+
   # Make
   - git clone --branch 3.x-dev https://github.com/nvelychenko/openideal-composer.git openideal-composer
   - cd openideal-composer
-  - composer install
+  - composer --verbose validate
   - make up
+  - mkdir -p web/sites/default/files
 
 install:
-  - sudo make install
+  - make install
+
+script:
   - vendor/bin/phpcs web/profiles/ --standard=Drupal,DrupalPractice --ignore="*.js,*.css,*.scss,*.sass,*.less,node_modules" --extensions=php,module,inc,install,test,profile,theme,info,yml
