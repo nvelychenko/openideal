@@ -17,7 +17,7 @@ before_install:
   - export COMPOSER_MEMORY_LIMIT=-1
   - travis_retry composer self-update
   - composer global require hirak/prestissimo
-  - composer config repositories.openideal git https://github.com/nvelychenko/openideal.git; fi
+  - composer config repositories.openideal git https://github.com/nvelychenko/openideal.git
 
   # Make
   - git clone --branch 3.x-dev https://github.com/nvelychenko/openideal-composer.git openideal-composer
