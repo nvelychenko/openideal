@@ -14,7 +14,8 @@ before_script:
 
 before_install:
   # Composer
-  - rm $HOME/.composer/auth.json
+  - composer clear-cache
+  - rm $HOME/.cache/composer
   - export COMPOSER_MEMORY_LIMIT=-1
   - travis_retry composer self-update
   - composer global require hirak/prestissimo
